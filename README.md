@@ -84,4 +84,4 @@ The notebook was tested with `jupyter nbconvert --execute`. The current clean-cl
 
 ## Notes
 
-This repository is organized as a coursework final project. The report, notebook, and forecast spreadsheet are preserved as submitted project artifacts.
+This repository is organized as a coursework final project. The report, notebook, and forecast spreadsheet are preserved as submitted project artifacts. The forecast workbook includes a `Notes` sheet documenting rows where MAE/MSE were unavailable.
