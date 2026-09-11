@@ -1,0 +1,79 @@
+name: Repository Check
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "**.ipynb"
+      - "**.docx"
+      - "**.xlsx"
+      - "README.md"
+      - "requirements.txt"
+      - ".github/workflows/repository-check.yml"
+  pull_request:
+    paths:
+      - "**.ipynb"
+      - "**.docx"
+      - "**.xlsx"
+      - "README.md"
+      - "requirements.txt"
+      - ".github/workflows/repository-check.yml"
+
+jobs:
+  validate-repository:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate project files
+        run: |
+          test -f "DS529-Final-Project Code.ipynb"
+          test -f "DS529-Final-Project Report.docx"
+          test -f "DS529-Final-Project Forecasts.xlsx"
+          test -f "README.md"
+          test -f "requirements.txt"
+
+      - name: Validate notebook JSON and imports
+        run: |
+          python - <<'PY'
+          import importlib
+          import json
+          from pathlib import Path
+
+          notebook_path = Path("DS529-Final-Project Code.ipynb")
+          with notebook_path.open(encoding="utf-8") as f:
+              notebook = json.load(f)
+
+          assert notebook.get("nbformat") == 4
+          assert notebook.get("cells"), "Notebook has no cells"
+
+          packages = [
+              "matplotlib",
+              "numpy",
+              "pandas",
+              "pmdarima",
+              "sklearn",
+              "statsmodels",
+              "openpyxl",
+          ]
+          for package in packages:
+              importlib.import_module(package)
+
+          raw_data = Path("Top 200 Spotify Chart Full List.xlsx")
+          if not raw_data.exists():
+              print("Raw input workbook is not committed; full notebook execution is documented but skipped.")
+          PY

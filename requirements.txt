@@ -1,0 +1,8 @@
+jupyter
+numpy<2.0
+pandas
+matplotlib
+openpyxl
+statsmodels
+scikit-learn
+pmdarima
